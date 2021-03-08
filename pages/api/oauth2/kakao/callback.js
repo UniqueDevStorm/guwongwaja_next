@@ -24,10 +24,13 @@ export default async (req, res) => {
         }
     })).json())
     const data = {
-        name : user.kakao_account.profile.nickname,
-        email : user.kakao_account.email
+        name : user['kakao_account']['profile']['nickname'],
+        email : user['kakao_account']['email']
     }
-    const cookie = new Cookies(req, res)
-    cookie.set('user', jwt.sign(data, process.env.JWT_SECRET);)
+    const cookies = new Cookies(req, res)
+    const key = jwt.sign(data, process.env.JWT_SECRET)
+    cookies.set('user', key, {
+        httpOnly: false
+    })
     res.redirect('/')
 }
