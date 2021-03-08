@@ -1,4 +1,6 @@
 import * as process from "process";
+import jwt from 'jsonwebtoken';
+import Cookies from 'cookies';
 
 export default async (req, res) => {
     const code = req.query.code;
@@ -21,8 +23,11 @@ export default async (req, res) => {
             Authorization: `${type} ${access_token}`
         }
     })).json())
-    const data = {}
-    data.name = user.kakao_account.profile.nickname;
-    data.email = user.kakao_account.email;
-    res.send(data);
+    const data = {
+        name : user.kakao_account.profile.nickname,
+        email : user.kakao_account.email
+    }
+    const cookie = new Cookies(req, res)
+    cookie.set('user', jwt.sign(data, process.env.JWT_SECRET);)
+    res.redirect('/')
 }
