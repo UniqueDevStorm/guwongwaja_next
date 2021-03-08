@@ -7,7 +7,7 @@ export default function Home() {
     return (
         <div style={{ textAlign: 'center', marginTop: '30vh' }}>
             <Button color='red' style={{ fontSize: '30px' }} onClick={() => {
-
+                window.location.replace('/api/oauth2/google/')
             }} >
                 <AiFillGooglePlusCircle /> Google 로 로그인하기
             </Button>
