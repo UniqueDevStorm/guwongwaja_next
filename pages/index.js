@@ -1,21 +1,32 @@
 import 'semantic-ui-css/semantic.min.css';
-import { Button } from "semantic-ui-react";
-import { AiFillGooglePlusCircle } from 'react-icons/ai';
-import { RiKakaoTalkFill } from 'react-icons/ri'
+import NotLogined from "../components/NotLogined";
+import Logined from "../components/Logined";
+import jwt from 'jsonwebtoken';
+import cookie from 'cookie';
+import * as process from "process";
 
-export default function Home() {
+export async function getServerSideProps(ctx) {
+    let key = null;
+    try {
+        const cookies = cookie.parse(ctx.req.headers.cookie);
+        const user = cookies.user;
+        key = jwt.verify(user, process.env.JWT_SECRET)
+    } catch { key = null }
+    return {
+        props: { user: key }
+    }
+}
+
+export default function Home({ ...key }) {
+    const data = key.user;
     return (
-        <div style={{ textAlign: 'center', marginTop: '30vh' }}>
-            <Button color='red' style={{ fontSize: '30px' }} onClick={() => {
-                window.location.replace('/api/oauth2/google/')
-            }} >
-                <AiFillGooglePlusCircle /> Google 로 로그인하기
-            </Button>
-            <Button color='yellow' style={{ fontSize: '30px' }} onClick={() => {
-                window.location.replace('/api/oauth2/kakao/')
-            }} >
-                <RiKakaoTalkFill /> Kakao 로 로그인하기
-            </Button>
+        <div>
+            {
+                data === null
+                ? <NotLogined />
+                : <Logined data={data} />
+            }
+
         </div>
     )
 }
